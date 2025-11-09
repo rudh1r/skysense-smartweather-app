@@ -25,6 +25,8 @@ export async function signUpWithEmail(
       data: {
         full_name: fullName,
       },
+      // This will disable the need for email confirmation
+      email_confirm: false,
     },
   });
 
@@ -342,6 +344,9 @@ export function getAuthErrorMessage(error: any): string {
   }
   if (message.includes('Email rate limit exceeded')) {
     return 'Too many requests. Please try again later';
+  }
+  if (message.includes('For security purposes, you can only request this after')) {
+    return 'You have made too many requests. Please wait a minute and try again.';
   }
   if (message.includes('User already registered')) {
     return 'An account with this email already exists';

@@ -384,6 +384,11 @@ const getWeatherBackground = (condition: string, timeOfDay: string) => {
 export function WeatherBackground({ condition, timezoneOffset, children }: WeatherBackgroundProps) {
   const [locationTime, setLocationTime] = useState(new Date());
   
+  // Guard clause to prevent crash if data is not yet available on initial render
+  if (!condition) {
+    return <div className="min-h-screen bg-sky-200">{children}</div>; // Render a simple fallback
+  }
+
   useEffect(() => {
     const updateTime = () => {
       if (timezoneOffset !== undefined) {

@@ -8,6 +8,11 @@ interface WindDetailsProps {
 }
 
 export function WindDetails({ speed, direction, gusts }: WindDetailsProps) {
+  // Guard clause to prevent crash if data is not yet available
+  if (typeof speed !== 'number' || typeof direction !== 'number') {
+    return null;
+  }
+
   const getWindDirection = (degrees: number) => {
     const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
     const index = Math.round(degrees / 22.5) % 16;

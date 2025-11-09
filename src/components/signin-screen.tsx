@@ -17,6 +17,8 @@ import {
   EyeOff,
   User,
   Check,
+  X,
+  MailCheck,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "./auth-context";
@@ -58,6 +60,7 @@ export function SignInScreen({ onBack, onContinueAsGuest }: SignInScreenProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState("");
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
 
   // Password validation
@@ -145,16 +148,18 @@ export function SignInScreen({ onBack, onContinueAsGuest }: SignInScreenProps) {
 
     setIsLoading(true);
     try {
-      const { error: signUpError } = await signUp(signUpEmail, signUpPassword, signUpName);
+      const { data: signUpData, error: signUpError } = await signUp(signUpEmail, signUpPassword, signUpName);
       if (signUpError) {
         throw signUpError;
       }
-      // Automatically sign in the user after successful sign-up
-      const { data, error: signInError } = await signIn(signUpEmail, signUpPassword);
-      if (signInError) throw signInError;
-      if (data.user) onBack();
+      // If sign-up is successful and we have a user session, close the sign-in screen.
+      if (signUpData?.user) {
+        onBack();
+      }
     } catch (err) {
-      setError("Failed to create account. This email may already be in use.");
+      // Use the specific error from Supabase instead of a generic one.
+      // This provides clear feedback, e.g., for weak passwords.
+      setError(err.message || "Failed to create account. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -429,7 +434,40 @@ export function SignInScreen({ onBack, onContinueAsGuest }: SignInScreenProps) {
                 </TabsContent>
 
                 {/* Sign Up Tab */}
-                <TabsContent value="signup" className="space-y-4">
+                <TabsContent value="signup" className="space-y-4 min-h-[400px]">
+                  <AnimatePresence mode="wait">
+                  {signUpSuccess ? (
+                    <motion.div
+                      key="success"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="flex flex-col items-center justify-center text-center p-4 space-y-4"
+                    >
+                      <div className="w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
+                        <Check className="h-8 w-8 text-green-600 dark:text-green-400" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Account Created!</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Your account for <strong>{signUpEmail}</strong> has been successfully created. You can now sign in.
+                      </p>
+                      <Button
+                        onClick={() => {
+                          setSignUpSuccess(false);
+                          setActiveTab("signin");
+                        }}
+                        className="w-full bg-gradient-to-r from-sky-500 to-teal-500 hover:from-sky-600 hover:to-teal-600 text-white"
+                      >
+                        Back to Sign In
+                      </Button>
+                    </motion.div>
+                  ) : (
+                  <motion.div
+                    key="form"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
                   <form onSubmit={handleEmailSignUp} className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="signup-email" className="text-gray-700 dark:text-gray-300">Email</Label>
@@ -580,6 +618,9 @@ export function SignInScreen({ onBack, onContinueAsGuest }: SignInScreenProps) {
                       <a href="#" className="text-sky-600 dark:text-sky-400 hover:underline">Cookies Policy</a>
                     </p>
                   </form>
+                  </motion.div>
+                  )}
+                  </AnimatePresence>
                 </TabsContent>
               </Tabs>
             </Card>

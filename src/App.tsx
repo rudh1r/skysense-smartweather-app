@@ -110,8 +110,8 @@ function AppContent() {
     } else {
       // Use default location if permission denied and nothing saved
       handleLocationSearch({ name: 'San Francisco, CA', lat: 37.7749, lng: -122.4194 });
-    }
-  }, [hasCompletedOnboarding, completeOnboarding]);
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, hasCompletedOnboarding]);
 
   // Fetch weather data when location changes
   useEffect(() => {
@@ -157,7 +157,7 @@ function AppContent() {
     if (isAuthenticated && user) {
       setActiveSection('home');
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user]);
   
   const handleLocationAllow = (locationName: string, coords: { lat: number; lng: number }) => {
     const newLocation = { name: locationName, lat: coords.lat, lng: coords.lng };

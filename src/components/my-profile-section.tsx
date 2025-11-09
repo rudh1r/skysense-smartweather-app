@@ -171,13 +171,15 @@ export function MyProfileSection({ onLocationChange, currentLocation, user, onSi
 
   const isAuthenticated = !!user;
 
-  const displayUser = user || {
-    name: "Guest User",
-    email: "Sign in to see your email",
-    avatar: `https://api.dicebear.com/7.x/initials/svg?seed=Guest`,
-  };
+  const displayUser = {
+    name: user?.name || "Guest User",
+    email: user?.email || "Sign in to see your email",
+    // Ensure there is always a valid avatar URL, falling back to DiceBear for guests or users without one.
+    avatar: user?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${user?.name || 'Guest'}`,
+  }
 
-  const initials = displayUser.name
+  // Use editedName for initials if available, otherwise fall back to displayUser name
+  const initials = (editedName || displayUser.name)
     .split(' ')
     .map(n => n[0])
     .join('')
