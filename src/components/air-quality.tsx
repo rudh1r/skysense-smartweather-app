@@ -79,12 +79,13 @@ export function AirQuality({ data }: AirQualityProps) {
                   {data.aqi}
                 </div>
                 <p className="text-muted-foreground font-semibold">AQI Level</p>
-                {data.aqi > 100 && (
-                  <div className="flex items-center justify-center space-x-2 mt-4 p-3 bg-orange-50/80 rounded-xl border border-orange-200/30">
-                    <AlertTriangle className="h-5 w-5 text-orange-600" />
-                    <span className="text-sm font-medium text-orange-700">Sensitive groups should limit outdoor activities</span>
-                  </div>
-                )}
+                {/* This div is always rendered to maintain a fixed height, but its content is only visible when AQI > 100 */}
+                <div className="flex items-center justify-center space-x-2 mt-4 p-3 bg-orange-50/80 rounded-xl border border-orange-200/30 transition-opacity duration-300">
+                  <AlertTriangle className={`h-5 w-5 text-orange-600 transition-opacity ${data.aqi > 100 ? 'opacity-100' : 'opacity-0'}`} />
+                  <span className={`text-sm font-medium text-orange-700 transition-opacity ${data.aqi > 100 ? 'opacity-100' : 'opacity-0'}`}>
+                    Sensitive groups should limit outdoor activities
+                  </span>
+                </div>
               </div>
             </CardContent>
           </Card>

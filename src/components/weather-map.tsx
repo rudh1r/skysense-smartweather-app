@@ -25,9 +25,11 @@ interface WeatherMapProps {
 const ChangeView = memo(({ center, zoom }: { center: [number, number]; zoom: number }) => {
   const map = useMap();
   useEffect(() => {
-    map.setView(center, zoom);
-    // Invalidate size to fix any potential rendering issues on container resize
-    map.invalidateSize();
+    if (center && typeof center[0] === 'number' && typeof center[1] === 'number') {
+      map.setView(center, zoom);
+      // Invalidate size to fix any potential rendering issues on container resize
+      map.invalidateSize();
+    }
   }, [map, center, zoom]);
   return null;
 });
@@ -46,7 +48,7 @@ export function WeatherMap({ currentLocation }: WeatherMapProps) {
     setActiveLayer(layer);
   };
 
-  if (!currentLocation) {
+  if (!currentLocation || typeof currentLocation.lat !== 'number' || typeof currentLocation.lng !== 'number') {
     return (
       <Card className="col-span-full lg:col-span-3 bg-white/80 backdrop-blur-sm border-white/20">
         <CardHeader>

@@ -426,7 +426,7 @@ function AppContent() {
   return (
     <WeatherBackground
       condition={weatherData.current.condition}
-      timezoneOffset={weatherData.current?.timezone}
+      timezoneOffset={weatherData.current?.timezoneOffset}
     >
       {/* Desktop/Tablet Sidebar Navigation */}
       <div className="hidden md:block">

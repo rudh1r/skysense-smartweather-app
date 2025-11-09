@@ -10,7 +10,7 @@ export function RealTimeClock({ timezone }: RealTimeClockProps) {
   useEffect(() => {
     const timerId = setInterval(() => setDate(new Date()), 1000);
     return () => clearInterval(timerId);
-  }, []);
+  }, [timezone]);
 
   const time = date.toLocaleTimeString([], {
     hour: '2-digit',

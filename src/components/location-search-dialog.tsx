@@ -251,7 +251,7 @@ export function LocationSearchDialog({
                 <p className="text-sm text-muted-foreground px-2 mb-3">Search Results</p>
                 {searchResults.map((location) => (
                   <motion.div
-                    key={location.id}
+                    key={`${location.name}-${location.lat}-${location.lng}`}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors group"
