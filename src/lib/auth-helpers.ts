@@ -13,22 +13,25 @@ import type { User } from '@supabase/supabase-js';
 /**
  * Sign up with email and password
  */
+// before: supabase.auth.signUp({ email, password, options: { data: { ... }, email_confirm: false } })
+
 export async function signUpWithEmail(
   email: string,
   password: string,
   fullName?: string
 ) {
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        full_name: fullName,
+  const { data, error } = await supabase.auth.signUp(
+    {
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName,
+        },
+        // optionally: emailRedirectTo: 'https://your-app.example.com/welcome'
       },
-      // This will disable the need for email confirmation
-      email_confirm: false,
     },
-  });
+  );
 
   if (error) {
     console.error('Sign up error:', error);

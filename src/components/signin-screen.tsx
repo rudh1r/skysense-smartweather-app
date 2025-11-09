@@ -96,23 +96,17 @@ export function SignInScreen({ onBack, onContinueAsGuest }: SignInScreenProps) {
 
     setIsLoading(true);
     try {
-      const { data, error: signInError } = await signIn(signInEmail, signInPassword);
-      if (signInError) {
-        // Use Supabase's user-friendly error message
-        if (signInError.message.includes("Invalid login credentials")) {
-          setError("Invalid email or password. Please try again.");
-        } else if (signInError.message.includes("Email not confirmed")) {
-          setError("Please verify your email before signing in.");
-        } else {
-          setError(signInError.message);
-        }
+      const { data, error } = await signIn(signInEmail, signInPassword);
+      if (error) {
+        setError(error.message || 'Sign in failed');
         return;
       }
-
       // If sign-in is successful and we have a user session, close the sign-in screen.
       if (data.user) {
         onBack();
       }
+    } catch (err: any) {
+      setError(err?.message ?? 'An unexpected error occurred.');
     } finally {
       setIsLoading(false);
     }
