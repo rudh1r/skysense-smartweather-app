@@ -408,6 +408,9 @@ function AppContent() {
         onBack={() => {
           setShowSignIn(false);
         }} 
+        onContinueAsGuest={() => {
+          setShowSignIn(false);
+        }}
       />
     );
   }

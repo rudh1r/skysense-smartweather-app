@@ -22,6 +22,7 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "./auth-context";
 import { ForgotPasswordDialog } from "./forgot-password-dialog";
+import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
 interface SignInScreenProps {
@@ -100,7 +101,18 @@ export function SignInScreen({ onBack, onContinueAsGuest }: SignInScreenProps) {
         onBack();
       }
     } catch (err) {
-      setError("Incorrect email or password. Please try again.");
+      // Check if the user exists in the database to provide a more specific error.
+      const { data: userExists, error: checkError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', signInEmail)
+        .single();
+
+      if (!userExists || checkError) {
+        setError("Account does not exist. Please sign up or check your email address.");
+      } else {
+        setError("Incorrect password. Please try again.");
+      }
     }
   };
 

@@ -111,21 +111,21 @@ export function MicroclimateCrowdsourcing({ onSignInClick }: MicroclimateCrowdso
 
   // Load reports from database or mock data
   useEffect(() => {
-    // This component is now fully integrated with the database.
-    // The loading logic is handled within the component itself.
-    // No mock data is used anymore.
-    // The useEffect hook correctly fetches reports on component mount.
-    // The isLoading state is set to false in the finally block,
-    // ensuring that either the reports or the "No reports" message is shown.
-    // The previous issue was related to incomplete mock data logic.
-    // The current implementation is correct.
-    // To ensure it re-fetches when the user logs in/out:
-    if (user === undefined) return; // Wait for auth state to be determined
-
-    // The existing fetchReports logic inside this useEffect is correct.
-    // The problem was likely stale data or a previous bug in the mock implementation.
-    // The current database-driven implementation should work as expected.
-  }, [user]);
+    const fetchReports = async () => {
+      setIsLoading(true);
+      try {
+        // Fetch reports, passing the user's ID to get their vote status
+        const fetchedReports = await getCrowdsourceReports(user?.id);
+        setReports(fetchedReports);
+      } catch (error) {
+        console.error("Failed to load community reports:", error);
+        toast.error("Failed to load community reports.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchReports();
+  }, [user?.id]);
 
   const handleReportButtonClick = () => {
     if (!isAuthenticated) {
