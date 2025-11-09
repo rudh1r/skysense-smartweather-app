@@ -1,17 +1,22 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Wind, Navigation } from "lucide-react";
+import { kmhToMph, type WeatherUnits } from "@/lib/unit-conversions";
 
 interface WindDetailsProps {
-  speed: number; // mph
+  speed: number; // km/h from API
   direction: number; // degrees
-  gusts?: number; // mph
+  gusts?: number; // km/h from API
+  units: WeatherUnits;
 }
 
-export function WindDetails({ speed, direction, gusts }: WindDetailsProps) {
-  // Guard clause to prevent crash if data is not yet available
-  if (typeof speed !== 'number' || typeof direction !== 'number') {
-    return null;
-  }
+export function WindDetails({ speed = 0, direction = 0, gusts, units }: WindDetailsProps) {
+  // Use default values if props are not provided to ensure the component always renders.
+  const currentSpeed = typeof speed === 'number' ? speed : 0;
+  const currentDirection = typeof direction === 'number' ? direction : 0;
+  const displaySpeed = units.windSpeed === 'kmh' ? currentSpeed : kmhToMph(currentSpeed);
+  const displayGusts = gusts ? (units.windSpeed === 'kmh' ? gusts : kmhToMph(gusts)) : undefined;
+  const displayUnit = units.windSpeed === 'kmh' ? 'km/h' : 'mph';
+
 
   const getWindDirection = (degrees: number) => {
     const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
@@ -33,8 +38,8 @@ export function WindDetails({ speed, direction, gusts }: WindDetailsProps) {
     return 'Violent storm';
   };
 
-  const compassDirection = getWindDirection(direction);
-  const windDescription = getWindDescription(speed);
+  const compassDirection = getWindDirection(currentDirection);
+  const windDescription = getWindDescription(currentSpeed);
 
   return (
     <Card className="bg-white/80 backdrop-blur-sm border-white/20 h-full">
@@ -50,8 +55,8 @@ export function WindDetails({ speed, direction, gusts }: WindDetailsProps) {
           <div>
             <p className="text-sm text-muted-foreground mb-1">Speed</p>
             <div className="flex items-baseline space-x-1">
-              <span className="text-3xl font-bold">{speed}</span>
-              <span className="text-sm text-muted-foreground">mph</span>
+              <span className="text-3xl font-bold">{Math.round(displaySpeed)}</span>
+              <span className="text-sm text-muted-foreground">{displayUnit}</span>
             </div>
             <p className="text-xs text-muted-foreground mt-1">{windDescription}</p>
           </div>
@@ -62,7 +67,7 @@ export function WindDetails({ speed, direction, gusts }: WindDetailsProps) {
               <Navigation 
                 className="h-8 w-8 text-blue-600" 
                 style={{ 
-                  transform: `rotate(${direction}deg)`,
+                  transform: `rotate(${currentDirection}deg)`,
                   transition: 'transform 0.5s ease'
                 }}
               />
@@ -74,11 +79,11 @@ export function WindDetails({ speed, direction, gusts }: WindDetailsProps) {
         </div>
 
         {/* Wind Gusts */}
-        {gusts && gusts > speed && (
+        {displayGusts && displayGusts > displaySpeed && (
           <div className="bg-blue-50 p-3 rounded-lg">
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">Gusts up to</p>
-              <p className="font-medium text-blue-900">{gusts} mph</p>
+              <p className="font-medium text-blue-900">{Math.round(displayGusts)} {displayUnit}</p>
             </div>
           </div>
         )}
@@ -91,7 +96,7 @@ export function WindDetails({ speed, direction, gusts }: WindDetailsProps) {
           </div>
           <div className="bg-gray-50 p-2 rounded-lg text-center">
             <p className="text-xs text-muted-foreground">Degrees</p>
-            <p className="font-medium">{direction}°</p>
+            <p className="font-medium">{currentDirection}°</p>
           </div>
         </div>
       </CardContent>

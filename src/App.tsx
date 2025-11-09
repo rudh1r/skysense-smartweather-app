@@ -49,7 +49,22 @@ function AppContent() {
   
   // Weather data states
   const [weatherData, setWeatherData] = useState<any>({
-    current: { condition: 'Sunny' },
+    current: {
+      condition: 'Sunny',
+      temperature: 0,
+      feelsLike: 0,
+      humidity: 0,
+      pressure: 0,
+      uvIndex: 0,
+      windSpeed: 0,
+      windDirection: 0,
+      windGust: 0,
+      sunrise: '0:00 AM',
+      sunset: '0:00 PM',
+      dewPoint: 0,
+      visibility: 0,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Default to user's browser timezone
+    },
     hourly: [],
     daily: [],
     airQuality: {
@@ -127,7 +142,7 @@ function AppContent() {
         ]);
 
         setWeatherData({
-          current: current as any,
+          current: { ...current, timezone: current.timezoneName, location: currentLocation.name } as any,
           hourly: hourly as any,
           daily: daily as any,
           airQuality: aq as any,

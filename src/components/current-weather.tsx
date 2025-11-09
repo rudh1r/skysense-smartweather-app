@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { celsiusToFahrenheit, type WeatherUnits } from "@/lib/unit-conversions";
 import { Cloud, Droplets, Wind, Thermometer, Eye, Gauge, Sunrise, Sunset } from "lucide-react";
+import { RealTimeClock } from "./real-time-clock";
 
 interface CurrentWeatherProps {
   data: {
@@ -17,6 +18,7 @@ interface CurrentWeatherProps {
     uvIndex: number;
     sunrise?: string;
     sunset?: string;
+    timezone?: string;
   };
   units: WeatherUnits;
 }
@@ -46,11 +48,14 @@ export function CurrentWeather({ data, units }: CurrentWeatherProps) {
       </CardHeader>
       <CardContent className="pt-0">
         <div className="space-y-8">
-          {/* Main temperature display */}
-          <div className="text-center animate-float">
-            <div className="text-8xl lg:text-9xl font-extralight mb-3 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
+          {/* Main temperature and time display */}
+          <div className="text-center animate-float space-y-2">
+            <div className="text-8xl lg:text-9xl font-extralight bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
               {displayTemp}°
             </div>
+
+            <RealTimeClock timezone={data.timezone} />
+
             <div className="space-y-2">
               <p className="text-muted-foreground text-lg">Feels like {displayFeelsLike}°</p>
             </div>
