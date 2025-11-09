@@ -31,6 +31,7 @@ export interface CurrentWeatherData {
   sunrise: string;
   sunset: string;
   icon: string;
+  timezone?: number;
 }
 
 export interface HourlyWeatherData {
@@ -104,10 +105,11 @@ export async function getCurrentWeather(lat: number, lon: number): Promise<Curre
       windDirection: getWindDirection(data.wind.deg),
       visibility: Math.round(data.visibility / 1000), // Convert to km
       feelsLike: Math.round(data.main.feels_like),
-      uvIndex: 0, // UV index requires One Call API 3.0 (paid)
-      sunrise: formatTime(new Date(data.sys.sunrise * 1000)),
-      sunset: formatTime(new Date(data.sys.sunset * 1000)),
+      uvIndex: 0, // UV index requires a different API call
+      sunrise: formatTime(new Date(data.sys.sunrise * 1000), data.timezone),
+      sunset: formatTime(new Date(data.sys.sunset * 1000), data.timezone),
       icon: data.weather[0].icon,
+      timezone: data.timezone,
     };
   } catch (error) {
     console.error('Error fetching current weather:', error);
@@ -340,8 +342,14 @@ function getWindDirection(degrees: number): string {
   return directions[index];
 }
 
-function formatTime(date: Date): string {
-  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+function formatTime(date: Date, timezoneOffsetSeconds?: number): string {
+  if (timezoneOffsetSeconds !== undefined) {
+    const utcTime = date.getTime() + (date.getTimezoneOffset() * 60000);
+    const locationTime = new Date(utcTime + (timezoneOffsetSeconds * 1000));
+    return locationTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  }
+  // Fallback for existing calls without timezone
+  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 }
 
 function getAQICategory(aqi: number): string {

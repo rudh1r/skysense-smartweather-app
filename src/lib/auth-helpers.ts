@@ -60,13 +60,14 @@ export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
+      // This must match the "Redirect URI" in your Supabase Google auth provider settings
+      redirectTo: `${import.meta.env.VITE_SUPABASE_URL}/auth/v1/callback`,
       queryParams: {
         access_type: 'offline',
         prompt: 'consent',
       },
-      // This is crucial for client-side OAuth flows
-      skipBrowserRedirect: true,
+      // Use 'pkce' for client-side auth flows to prevent this error
+      flowType: 'pkce',
     },
   });
 

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 interface WeatherBackgroundProps {
   condition: string;
+  timezoneOffset?: number; // UTC offset in seconds
   children: React.ReactNode;
 }
 
@@ -154,8 +155,8 @@ const Moon = () => (
   </motion.div>
 );
 
-const getTimeOfDay = () => {
-  const hour = new Date().getHours();
+const getTimeOfDay = (date: Date) => {
+  const hour = date.getHours();
   
   if (hour >= 5 && hour < 7) return 'dawn'; // 5 AM - 7 AM
   if (hour >= 7 && hour < 12) return 'morning'; // 7 AM - 12 PM
@@ -380,19 +381,30 @@ const getWeatherBackground = (condition: string, timeOfDay: string) => {
   };
 };
 
-export function WeatherBackground({ condition, children }: WeatherBackgroundProps) {
-  const [timeOfDay, setTimeOfDay] = useState(getTimeOfDay());
+export function WeatherBackground({ condition, timezoneOffset, children }: WeatherBackgroundProps) {
+  const [locationTime, setLocationTime] = useState(new Date());
   
   useEffect(() => {
-    // Update time of day every minute
+    const updateTime = () => {
+      if (timezoneOffset !== undefined) {
+        const now = new Date();
+        const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+        const newLocationTime = new Date(utcTime + (timezoneOffset * 1000));
+        setLocationTime(newLocationTime);
+      } else {
+        setLocationTime(new Date()); // Fallback to user's local time
+      }
+    };
+
+    updateTime(); // Initial update
     const interval = setInterval(() => {
-      setTimeOfDay(getTimeOfDay());
+      updateTime();
     }, 60000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [timezoneOffset]);
   
-  const { background, effects } = getWeatherBackground(condition, timeOfDay);
+  const { background, effects } = getWeatherBackground(condition, getTimeOfDay(locationTime));
   
   return (
     <div 

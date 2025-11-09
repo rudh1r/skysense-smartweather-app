@@ -17,7 +17,6 @@ import {
   EyeOff,
   User,
   Check,
-  X
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "./auth-context";
@@ -92,27 +91,27 @@ export function SignInScreen({ onBack, onContinueAsGuest }: SignInScreenProps) {
       return;
     }
 
+    setIsLoading(true);
     try {
       const { data, error: signInError } = await signIn(signInEmail, signInPassword);
-      if (signInError) throw signInError;
+      if (signInError) {
+        // Use Supabase's user-friendly error message
+        if (signInError.message.includes("Invalid login credentials")) {
+          setError("Invalid email or password. Please try again.");
+        } else if (signInError.message.includes("Email not confirmed")) {
+          setError("Please verify your email before signing in.");
+        } else {
+          setError(signInError.message);
+        }
+        return;
+      }
 
       // If sign-in is successful and we have a user session, close the sign-in screen.
       if (data.user) {
         onBack();
       }
-    } catch (err) {
-      // Check if the user exists in the database to provide a more specific error.
-      const { data: userExists, error: checkError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', signInEmail)
-        .single();
-
-      if (!userExists || checkError) {
-        setError("Account does not exist. Please sign up or check your email address.");
-      } else {
-        setError("Incorrect password. Please try again.");
-      }
+    } finally {
+      setIsLoading(false);
     }
   };
 

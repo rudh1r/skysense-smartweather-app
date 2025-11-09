@@ -145,13 +145,6 @@ function AppContent() {
     }
   }, [currentLocation]);
 
-  // Save location to local storage whenever it changes
-  useEffect(() => {
-    if (currentLocation) {
-      localStorage.setItem('skysense-saved-location', JSON.stringify(currentLocation));
-    }
-  }, [currentLocation]);
-
   // When authentication state changes, hide the sign-in screen
   useEffect(() => {
     if (isAuthenticated) {
@@ -416,7 +409,10 @@ function AppContent() {
   }
 
   return (
-    <WeatherBackground condition={weatherData.current.condition}>
+    <WeatherBackground
+      condition={weatherData.current.condition}
+      timezoneOffset={weatherData.current?.timezone}
+    >
       {/* Desktop/Tablet Sidebar Navigation */}
       <div className="hidden md:block">
         <SidebarNavigation 
