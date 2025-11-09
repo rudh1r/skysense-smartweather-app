@@ -17,6 +17,9 @@ export function FeelsLike({ temperature, feelsLike, heatIndex, windChill, units 
 
   const displayTemp = units.temperature === 'celsius' ? temperature : celsiusToFahrenheit(temperature);
   const displayFeelsLike = units.temperature === 'celsius' ? Math.round(feelsLike) : celsiusToFahrenheit(feelsLike);
+  const displayHeatIndex = heatIndex !== undefined ? (units.temperature === 'celsius' ? Math.round(heatIndex) : celsiusToFahrenheit(heatIndex)) : undefined;
+  const displayWindChill = windChill !== undefined ? (units.temperature === 'celsius' ? Math.round(windChill) : celsiusToFahrenheit(windChill)) : undefined;
+
 
   const difference = feelsLike - temperature;
   const isWarmer = difference > 0;
@@ -77,17 +80,17 @@ export function FeelsLike({ temperature, feelsLike, heatIndex, windChill, units 
 
         {/* Additional Factors */}
         <div className="grid grid-cols-2 gap-2">
-          {heatIndex !== undefined && heatIndex > temperature && (
+          {displayHeatIndex !== undefined && displayHeatIndex > displayTemp && (
             <div className="bg-red-50 p-3 rounded-lg">
               <p className="text-xs text-muted-foreground mb-1">Heat Index</p>
-              <p className="font-medium text-red-900">{heatIndex}°F</p>
+              <p className="font-medium text-red-900">{displayHeatIndex}°</p>
             </div>
           )}
           
-          {windChill !== undefined && windChill < temperature && (
+          {displayWindChill !== undefined && displayWindChill < displayTemp && (
             <div className="bg-blue-50 p-3 rounded-lg">
               <p className="text-xs text-muted-foreground mb-1">Wind Chill</p>
-              <p className="font-medium text-blue-900">{windChill}°F</p>
+              <p className="font-medium text-blue-900">{displayWindChill}°</p>
             </div>
           )}
         </div>

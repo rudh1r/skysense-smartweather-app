@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { ScrollArea } from "./ui/scroll-area";
+import { celsiusToFahrenheit, type WeatherUnits } from "@/lib/unit-conversions";
 import { Cloud, CloudRain, Sun, CloudSnow, Droplets } from "lucide-react";
 
 interface HourlyData {
@@ -12,6 +13,7 @@ interface HourlyData {
 
 interface HourlyForecastProps {
   data: HourlyData[];
+  units: WeatherUnits;
 }
 
 const getWeatherIcon = (condition: string) => {
@@ -32,7 +34,7 @@ const getWeatherIcon = (condition: string) => {
   }
 };
 
-export function HourlyForecast({ data }: HourlyForecastProps) {
+export function HourlyForecast({ data, units }: HourlyForecastProps) {
   return (
     <Card className="col-span-full lg:col-span-3 h-[550px] sm:h-[600px] flex flex-col bg-white/80 backdrop-blur-sm border-white/20">
       <CardHeader className="pb-3 flex-shrink-0">
@@ -41,8 +43,11 @@ export function HourlyForecast({ data }: HourlyForecastProps) {
       <CardContent className="pt-0 flex-1 min-h-0">
         <ScrollArea className="h-full">
           <div className="space-y-2 pr-4">
-            {data.map((hour, index) => (
-              <div
+            {data.map((hour, index) => {
+              const displayTemp = units.temperature === 'celsius' ? hour.temperature : celsiusToFahrenheit(hour.temperature);
+
+              return (
+                <div
                 key={index}
                 className="flex items-center justify-between p-2.5 rounded-lg bg-white/40 backdrop-blur-sm border border-white/30 hover:bg-white/50 transition-colors"
               >
@@ -51,7 +56,7 @@ export function HourlyForecast({ data }: HourlyForecastProps) {
                   <div className="flex items-center">
                     {getWeatherIcon(hour.condition)}
                   </div>
-                  <p className="text-lg w-10">{hour.temperature}°</p>
+                  <p className="text-lg w-10">{displayTemp}°</p>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center space-x-1">
@@ -61,7 +66,8 @@ export function HourlyForecast({ data }: HourlyForecastProps) {
                   <p className="text-xs text-muted-foreground w-7">{hour.humidity}%</p>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </ScrollArea>
       </CardContent>

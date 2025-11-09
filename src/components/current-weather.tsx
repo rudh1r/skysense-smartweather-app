@@ -29,6 +29,10 @@ export function CurrentWeather({ data, units }: CurrentWeatherProps) {
   const displayTemp = units.temperature === 'celsius' 
     ? data.temperature 
     : celsiusToFahrenheit(data.temperature);
+  
+  const displayFeelsLike = units.temperature === 'celsius'
+    ? Math.round(data.feelsLike)
+    : celsiusToFahrenheit(data.feelsLike);
 
   return (
     <Card className="col-span-full lg:col-span-2 h-full bg-gradient-to-br from-white/90 via-white/80 to-white/70 backdrop-blur-xl border-white/30 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in">
@@ -48,7 +52,7 @@ export function CurrentWeather({ data, units }: CurrentWeatherProps) {
               {displayTemp}°
             </div>
             <div className="space-y-2">
-              <p className="text-muted-foreground text-lg">Feels like {data.feelsLike}°</p>
+              <p className="text-muted-foreground text-lg">Feels like {displayFeelsLike}°</p>
             </div>
           </div>
         </div>

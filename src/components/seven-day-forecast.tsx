@@ -37,6 +37,10 @@ const getWeatherIcon = (condition: string) => {
 };
 
 export function SevenDayForecast({ data, units }: SevenDayForecastProps) {
+  if (!data || data.length === 0) {
+    return null; // or a loading skeleton
+  }
+
   return (
     <Card className="col-span-full lg:col-span-3 bg-gradient-to-br from-white/90 via-white/80 to-white/70 backdrop-blur-xl border-white/30 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in">
       <CardHeader className="pb-4">
