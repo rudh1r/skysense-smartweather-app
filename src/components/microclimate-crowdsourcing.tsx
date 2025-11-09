@@ -275,12 +275,7 @@ export function MicroclimateCrowdsourcing({ onSignInClick }: MicroclimateCrowdso
         </CardHeader>
         
         <CardContent className="space-y-4">
-          {isLoading ? (
-            <div className="text-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-500 mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">Loading community reports...</p>
-            </div>
-          ) : reports.length === 0 ? (
+          {reports.length === 0 ? (
             <div className="text-center py-8 space-y-3">
               <MessageCircle className="h-12 w-12 text-gray-400 mx-auto" />
               <p className="text-sm text-muted-foreground">No community reports yet</p>
