@@ -38,9 +38,8 @@ interface HealthAlert {
   recommendations: string[];
 }
 
-export function HealthWeatherAdvisor({ weather }: HealthWeatherAdvisorProps) {
-  // AI-powered health advisor that analyzes multiple factors and always generates exactly 3 health recommendations
-  const generateSmartHealthAdvice = (): HealthAlert[] => {
+// AI-powered health advisor that analyzes multiple factors and always generates exactly 3 health recommendations
+export const generateSmartHealthAdvice = (weather: HealthWeatherAdvisorProps['weather']): HealthAlert[] => {
     const allAlerts: HealthAlert[] = [];
     let healthRiskScore = 0; // Overall health risk assessment
 
@@ -459,7 +458,10 @@ export function HealthWeatherAdvisor({ weather }: HealthWeatherAdvisorProps) {
     return sortedAlerts.slice(0, 3);
   };
 
-  const alerts = generateSmartHealthAdvice();
+export function HealthWeatherAdvisor({ weather }: HealthWeatherAdvisorProps) {
+  
+
+  const alerts = generateSmartHealthAdvice(weather);
   
   const severityColors = {
     low: 'bg-green-500/20 border-green-500/40 text-green-800',

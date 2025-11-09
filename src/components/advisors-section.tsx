@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Badge } from "./ui/badge";
-import { DailyLifeAdvisor } from "./daily-life-advisor";
-import { HealthWeatherAdvisor } from "./health-weather-advisor";
+import { DailyLifeAdvisor, generateSmartAdvice as generateDailyLifeAdvice } from "./daily-life-advisor";
+import { HealthWeatherAdvisor, generateSmartHealthAdvice } from "./health-weather-advisor";
 import { 
   Lightbulb,
   Heart,
@@ -37,27 +37,9 @@ interface AdvisorsSectionProps {
 }
 
 export function AdvisorsSection({ dailyLifeWeather, healthWeather }: AdvisorsSectionProps) {
-  // Calculate total advisor alerts for each section
-  const getDailyLifeAlertCount = () => {
-    let count = 0;
-    if (dailyLifeWeather.precipitation >= 30) count++;
-    if (dailyLifeWeather.uvIndex >= 6) count++;
-    if (dailyLifeWeather.temperature <= 5 || dailyLifeWeather.temperature >= 30) count++;
-    if (dailyLifeWeather.windSpeed >= 20) count++;
-    return count;
-  };
-
-  const getHealthAlertCount = () => {
-    let count = 0;
-    if (healthWeather.pollen.overall >= 4) count++;
-    if (healthWeather.aqi >= 101) count++;
-    if (healthWeather.temperature >= 30) count++;
-    if (healthWeather.uvIndex >= 8) count++;
-    return count;
-  };
-
-  const dailyLifeAlerts = getDailyLifeAlertCount();
-  const healthAlerts = getHealthAlertCount();
+  // Get the actual generated advice to accurately count the tips.
+  const dailyLifeAlerts = generateDailyLifeAdvice(dailyLifeWeather).length;
+  const healthAlerts = generateSmartHealthAdvice(healthWeather).length;
 
   return (
     <div className="space-y-4 h-full">

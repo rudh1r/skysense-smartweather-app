@@ -145,6 +145,13 @@ function AppContent() {
     }
   }, [currentLocation]);
 
+  // Save location to local storage whenever it changes
+  useEffect(() => {
+    if (currentLocation) {
+      localStorage.setItem('skysense-saved-location', JSON.stringify(currentLocation));
+    }
+  }, [currentLocation]);
+
   // When authentication state changes, hide the sign-in screen
   useEffect(() => {
     if (isAuthenticated) {
@@ -401,9 +408,6 @@ function AppContent() {
         onBack={() => {
           setShowSignIn(false);
         }} 
-        onContinueAsGuest={() => {
-          setShowSignIn(false);
-        }}
       />
     );
   }

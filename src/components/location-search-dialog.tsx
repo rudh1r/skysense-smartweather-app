@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { searchLocations } from "@/lib/weather-api";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -23,20 +24,20 @@ interface LocationSearchDialogProps {
   onLocationChange: (location: { name: string, lat: number, lng: number }) => void;
 }
 
-interface LocationResult {
+interface LocationSearchResult {
   name: string;
   lat: number;
   lng: number;
   country: string;
-  id: number;
+  id?: number; // Optional, as API might not provide it
   temp?: string;
   trending?: boolean;
 }
 
-const mockRecentSearches: LocationResult[] = [
-  { id: 1, name: "San Francisco, CA", country: "United States" },
-  { id: 2, name: "New York, NY", country: "United States" },
-  { id: 3, name: "London", country: "United Kingdom" },
+const mockRecentSearches: LocationSearchResult[] = [
+  { id: 1, name: "San Francisco, CA", country: "United States", lat: 37.7749, lng: -122.4194 },
+  { id: 2, name: "New York, NY", country: "United States", lat: 40.7128, lng: -74.0060 },
+  { id: 3, name: "London", country: "United Kingdom", lat: 51.5072, lng: -0.1276 },
 ];
 
 const mockPopularLocations: LocationResult[] = [
@@ -55,7 +56,7 @@ export function LocationSearchDialog({
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
-  const [searchResults, setSearchResults] = useState<LocationResult[]>([]);
+  const [searchResults, setSearchResults] = useState<LocationSearchResult[]>([]);
   const [savedLocations, setSavedLocations] = useState<Set<string>>(new Set());
 
   // Load saved locations from localStorage
@@ -71,26 +72,19 @@ export function LocationSearchDialog({
     }
   }, [isOpen]);
 
-  // Mock search results
-  const mockSearchResults: LocationResult[] = [
-    { id: 1, name: "Los Angeles, CA", country: "United States", temp: "22°C", lat: 34.0522, lng: -118.2437 },
-    { id: 2, name: "Las Vegas, NV", country: "United States", temp: "28°C", lat: 36.1699, lng: -115.1398 },
-    { id: 3, name: "London", country: "United Kingdom", temp: "15°C", lat: 51.5072, lng: -0.1276 },
-    { id: 4, name: "Berlin", country: "Germany", temp: "18°C", lat: 52.5200, lng: 13.4050 },
-    { id: 5, name: "Barcelona", country: "Spain", temp: "24°C", lat: 41.3851, lng: 2.1734 },
-  ];
-
   useEffect(() => {
     if (searchQuery.length > 0) {
       setIsSearching(true);
-      const timer = setTimeout(() => {
-        const filtered = mockSearchResults.filter(
-          (loc) =>
-            loc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            loc.country.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        setSearchResults(filtered);
-        setIsSearching(false);
+      const timer = setTimeout(async () => {
+        try {
+          const results = await searchLocations(searchQuery);
+          setSearchResults(results.map(r => ({ ...r, lat: r.latitude, lng: r.longitude })));
+        } catch (error) {
+          console.error("Failed to search locations:", error);
+          setSearchResults([]);
+        } finally {
+          setIsSearching(false);
+        }
       }, 500);
       return () => clearTimeout(timer);
     } else {
@@ -98,8 +92,12 @@ export function LocationSearchDialog({
     }
   }, [searchQuery]);
 
-  const handleLocationSelect = (locationName: string) => {
-    onLocationChange({ name: locationName, lat: 0, lng: 0 }); // Coords are mock here
+  const handleLocationSelect = (location: LocationSearchResult) => {
+    onLocationChange({
+      name: location.name,
+      lat: location.lat,
+      lng: location.lng,
+    });
     setSearchQuery("");
     onClose();
   };
@@ -259,7 +257,7 @@ export function LocationSearchDialog({
                     className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors group"
                   >
                     <button
-                      onClick={() => handleLocationSelect(location.name)}
+                      onClick={() => handleLocationSelect(location)}
                       className="flex-1 flex items-center gap-3 text-left"
                     >
                       <MapPin className="h-4 w-4 text-muted-foreground" />
@@ -304,7 +302,7 @@ export function LocationSearchDialog({
                       className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors group"
                     >
                       <button
-                        onClick={() => handleLocationSelect(location.name)}
+                        onClick={() => handleLocationSelect(location)}
                         className="flex-1 flex items-center gap-3 text-left"
                       >
                         <Clock className="h-4 w-4 text-muted-foreground" />
@@ -347,7 +345,7 @@ export function LocationSearchDialog({
                       className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group"
                     >
                       <button
-                        onClick={() => handleLocationSelect(location.name)}
+                        onClick={() => handleLocationSelect(location)}
                         className="flex-1 flex items-center gap-2 text-left"
                       >
                         <div className="flex-1">

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getCurrentWeather } from "@/lib/weather-api";
 import { Card } from "./ui/card";
 import { useAuth } from "./auth-context";
 import { Button } from "./ui/button";
@@ -33,7 +34,7 @@ interface SavedLocation {
 }
 
 interface SavedLocationsSectionProps {
-  onLocationSelect?: (location: string, coords: { lat: number, lng: number }) => void;
+  onLocationSelect?: (location: { name: string, lat: number, lng: number }) => void;
 }
 
 export function SavedLocationsSection({ onLocationSelect }: SavedLocationsSectionProps) {
@@ -183,7 +184,7 @@ export function SavedLocationsSection({ onLocationSelect }: SavedLocationsSectio
 
   const handleSelectLocation = (location: SavedLocation) => {
     if (onLocationSelect) {
-      onLocationSelect(`${location.name}, ${location.country}`, location.coordinates);
+      onLocationSelect({ name: location.name, lat: location.coordinates.lat, lng: location.coordinates.lng });
     }
     toast.success(`Viewing weather for ${location.name}`);
   };

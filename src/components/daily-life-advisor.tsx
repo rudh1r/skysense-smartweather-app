@@ -37,9 +37,8 @@ interface Advice {
   color: string;
 }
 
-export function DailyLifeAdvisor({ weather }: DailyLifeAdvisorProps) {
-  // AI-powered smart advisor that analyzes multiple conditions to generate exactly 3 personalized tips
-  const generateSmartAdvice = (): Advice[] => {
+// AI-powered smart advisor that analyzes multiple conditions to generate exactly 3 personalized tips
+export const generateSmartAdvice = (weather: WeatherCondition): Advice[] => {
     const allAdvice: Advice[] = [];
     let score = 0; // Comfort score to determine overall conditions
 
@@ -352,7 +351,10 @@ export function DailyLifeAdvisor({ weather }: DailyLifeAdvisorProps) {
     return sortedAdvice.slice(0, 3);
   };
 
-  const advice = generateSmartAdvice();
+export function DailyLifeAdvisor({ weather }: DailyLifeAdvisorProps) {
+  
+
+  const advice = generateSmartAdvice(weather);
 
   const priorityBadges = {
     high: "bg-red-500/20 text-red-800 border-red-500/40",

@@ -135,9 +135,13 @@ export function SignInScreen({ onBack, onContinueAsGuest }: SignInScreenProps) {
     setIsLoading(true);
     try {
       const { error: signUpError } = await signUp(signUpEmail, signUpPassword, signUpName);
-      if (signUpError) throw signUpError;
-      toast.success("Account created successfully! Please sign in.");
-      setActiveTab("signin");
+      if (signUpError) {
+        throw signUpError;
+      }
+      // Automatically sign in the user after successful sign-up
+      const { data, error: signInError } = await signIn(signUpEmail, signUpPassword);
+      if (signInError) throw signInError;
+      if (data.user) onBack();
     } catch (err) {
       setError("Failed to create account. This email may already be in use.");
     } finally {
