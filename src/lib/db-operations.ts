@@ -245,15 +245,12 @@ export async function getCrowdsourceReportsNearby(
  * Create a new crowdsource report
  */
 export async function createCrowdsourceReport(
-  userId: string,
-  report: Omit<CrowdsourceReport, 'id' | 'user_id' | 'upvotes' | 'downvotes' | 'is_verified' | 'verified_by' | 'verified_at' | 'status' | 'created_at' | 'updated_at'>
+  report: Omit<CrowdsourceReport, 'id' | 'upvotes' | 'downvotes' | 'is_verified' | 'verified_by' | 'verified_at' | 'status' | 'created_at' | 'updated_at'>
 ): Promise<CrowdsourceReport | null> {
   const { data, error } = await supabase
     .from('crowdsource_reports')
-    .insert({
-      user_id: userId,
-      ...report,
-    })
+    // The report object now contains the user_id, so we can pass it directly.
+    .insert(report)
     .select()
     .single();
 

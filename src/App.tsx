@@ -27,8 +27,7 @@ import { WindDetails } from "./components/wind-details";
 import { HumidityPressure } from "./components/humidity-pressure";
 import { PrecipitationRadar } from "./components/precipitation-radar";
 import { FeelsLike } from "./components/feels-like";
-import { getCrowdsourceReports, getWeatherAlerts as getDisasterAlerts } from "@/lib/db-operations";
-import { Loader2 } from "lucide-react";
+import { getCrowdsourceReports, getWeatherAlerts as getDisasterAlerts } from "@/lib/db-operations";import { Loader2, Cloud } from "lucide-react";
 import { type WeatherUnits } from "@/lib/unit-conversions";
 import {
   getCurrentWeather as fetchCurrentWeather,
@@ -37,9 +36,10 @@ import {
   getAirQuality as fetchAirQuality,
   searchLocations,
 } from "@/lib/weather-api";
+import { supabase } from "@/lib/supabase";
 
 function AppContent() {
-  const { user, isAuthenticated, isLoading, hasCompletedOnboarding, completeOnboarding } = useAuth();
+  const { user, isAuthenticated, isLoading, hasCompletedOnboarding, completeOnboarding, getSession } = useAuth();
   const { units, setUnits } = useSettings();
   const [currentLocation, setCurrentLocation] = useState<{ name: string, lat: number, lng: number } | null>(null);
   
@@ -101,6 +101,23 @@ function AppContent() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSidebarCollapsed]);
 
+  // Listen for auth changes to handle OAuth redirects
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        // When a session is available (on login or page refresh), close the sign-in screen.
+        if (session && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
+          setShowSignIn(false);
+          // Refresh the session in the auth context to update the UI
+          getSession();
+        } else if (!session && event === 'SIGNED_OUT') {
+          // Optionally handle user sign-out, e.g., redirect to home or show sign-in.
+          // For now, we'll just ensure the sign-in screen can be shown if needed.
+          // You might want to navigate to the 'home' section here.
+        }
+      });
+  }, [getSession]);
+
   // Initialize app on mount
   useEffect(() => {
     if (!hasCompletedOnboarding) {
@@ -125,8 +142,8 @@ function AppContent() {
     } else {
       // Use default location if permission denied and nothing saved
       handleLocationSearch({ name: 'San Francisco, CA', lat: 37.7749, lng: -122.4194 });
-    } // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, hasCompletedOnboarding]);
+    }
+  }, [hasCompletedOnboarding]); // Run only when onboarding status changes.
 
   // Fetch weather data when location changes
   useEffect(() => {

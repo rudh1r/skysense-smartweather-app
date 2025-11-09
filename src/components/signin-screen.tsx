@@ -102,7 +102,7 @@ export function SignInScreen({ onBack, onContinueAsGuest }: SignInScreenProps) {
         return;
       }
       // If sign-in is successful and we have a user session, close the sign-in screen.
-      if (data.user) {
+      if (data.session) {
         onBack();
       }
     } catch (err: any) {
@@ -146,9 +146,10 @@ export function SignInScreen({ onBack, onContinueAsGuest }: SignInScreenProps) {
       if (signUpError) {
         throw signUpError;
       }
-      // If sign-up is successful and we have a user session, close the sign-in screen.
-      if (signUpData?.user) {
-        onBack();
+      // If sign-up is successful, show a success message.
+      // The user will need to confirm their email.
+      if (signUpData) {
+        setSignUpSuccess(true);
       }
     } catch (err) {
       // Use the specific error from Supabase instead of a generic one.
