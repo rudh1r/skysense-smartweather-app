@@ -1,0 +1,391 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  
+  /* SkySense Brand Colors - Light Theme */
+  --background: #f8fafb;
+  --foreground: #0a1929;
+  --card: rgba(255, 255, 255, 0.92);
+  --card-foreground: #0a1929;
+  --popover: rgba(255, 255, 255, 0.98);
+  --popover-foreground: #0a1929;
+  
+  /* Sky Blue Primary - Main brand color */
+  --primary: #0ea5e9;
+  --primary-foreground: #ffffff;
+  
+  /* Cool Teal Accent */
+  --secondary: #14b8a6;
+  --secondary-foreground: #ffffff;
+  
+  /* Soft Gray */
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  
+  /* Light Blue Accent */
+  --accent: #e0f2fe;
+  --accent-foreground: #075985;
+  
+  /* Safety Colors */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --alert-emergency: #dc2626;
+  --alert-warning: #f59e0b;
+  --alert-info: #0ea5e9;
+  
+  --border: rgba(148, 163, 184, 0.18);
+  --input: rgba(255, 255, 255, 0.95);
+  --input-background: rgba(248, 250, 252, 0.95);
+  --switch-background: #cbd5e1;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: rgba(14, 165, 233, 0.35);
+  
+  /* Chart colors - weather themed */
+  --chart-1: #0ea5e9; /* Sky blue */
+  --chart-2: #10b981; /* Green */
+  --chart-3: #f59e0b; /* Amber */
+  --chart-4: #ef4444; /* Red */
+  --chart-5: #8b5cf6; /* Purple */
+  
+  /* Rounded design */
+  --radius: 1rem;
+  --radius-sm: 0.625rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.5rem;
+  
+  /* Sidebar */
+  --sidebar: rgba(255, 255, 255, 0.95);
+  --sidebar-foreground: #0a1929;
+  --sidebar-primary: #0ea5e9;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(241, 245, 249, 0.85);
+  --sidebar-accent-foreground: #334155;
+  --sidebar-border: rgba(148, 163, 184, 0.15);
+  --sidebar-ring: rgba(14, 165, 233, 0.35);
+  
+  /* SkySense Shadows - Soft and futuristic */
+  --shadow-xs: 0 1px 2px 0 rgba(14, 165, 233, 0.08);
+  --shadow-sm: 0 2px 4px 0 rgba(14, 165, 233, 0.12), 0 1px 2px -1px rgba(14, 165, 233, 0.08);
+  --shadow-md: 0 6px 12px -2px rgba(14, 165, 233, 0.15), 0 3px 6px -3px rgba(14, 165, 233, 0.1);
+  --shadow-lg: 0 12px 24px -4px rgba(14, 165, 233, 0.18), 0 6px 12px -6px rgba(14, 165, 233, 0.12);
+  --shadow-xl: 0 24px 48px -8px rgba(14, 165, 233, 0.2), 0 10px 20px -8px rgba(14, 165, 233, 0.15);
+  
+  /* SkySense Gradients - Sky technology aesthetic */
+  --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%);
+  --gradient-secondary: linear-gradient(135deg, #14b8a6 0%, #0d9488 50%, #0f766e 100%);
+  --gradient-accent: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 50%, #0284c7 100%);
+  --gradient-sky: linear-gradient(180deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%);
+  --gradient-hero: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 35%, #14b8a6 70%, #10b981 100%);
+}
+
+.dark {
+  /* SkySense Dark Theme - Night sky aesthetic */
+  --background: #0a1929;
+  --foreground: #f0f9ff;
+  --card: rgba(15, 23, 42, 0.92);
+  --card-foreground: #f0f9ff;
+  --popover: rgba(15, 23, 42, 0.98);
+  --popover-foreground: #f0f9ff;
+  
+  /* Sky Blue Primary - Brighter for dark mode */
+  --primary: #38bdf8;
+  --primary-foreground: #0a1929;
+  
+  /* Cool Teal Accent */
+  --secondary: #2dd4bf;
+  --secondary-foreground: #0a1929;
+  
+  /* Dark Gray */
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  
+  /* Dark Blue Accent */
+  --accent: #0c4a6e;
+  --accent-foreground: #bae6fd;
+  
+  /* Safety Colors - Brighter for visibility */
+  --destructive: #f87171;
+  --destructive-foreground: #ffffff;
+  --warning: #fbbf24;
+  --warning-foreground: #0a1929;
+  --alert-emergency: #ef4444;
+  --alert-warning: #f59e0b;
+  --alert-info: #38bdf8;
+  
+  --border: rgba(148, 163, 184, 0.25);
+  --input: rgba(30, 41, 59, 0.95);
+  --input-background: rgba(15, 23, 42, 0.95);
+  --switch-background: #475569;
+  --ring: rgba(56, 189, 248, 0.4);
+  
+  /* Chart colors - adjusted for dark mode */
+  --chart-1: #38bdf8;
+  --chart-2: #34d399;
+  --chart-3: #fbbf24;
+  --chart-4: #f87171;
+  --chart-5: #a78bfa;
+  
+  /* Sidebar dark */
+  --sidebar: rgba(15, 23, 42, 0.95);
+  --sidebar-foreground: #f0f9ff;
+  --sidebar-primary: #38bdf8;
+  --sidebar-primary-foreground: #0a1929;
+  --sidebar-accent: rgba(30, 41, 59, 0.85);
+  --sidebar-accent-foreground: #94a3b8;
+  --sidebar-border: rgba(148, 163, 184, 0.2);
+  --sidebar-ring: rgba(56, 189, 248, 0.4);
+  
+  /* Dark mode shadows - enhanced with blue glow */
+  --shadow-xs: 0 1px 2px 0 rgba(56, 189, 248, 0.12);
+  --shadow-sm: 0 2px 4px 0 rgba(56, 189, 248, 0.18), 0 1px 2px -1px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 6px 12px -2px rgba(56, 189, 248, 0.2), 0 3px 6px -3px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 24px -4px rgba(56, 189, 248, 0.25), 0 6px 12px -6px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 24px 48px -8px rgba(56, 189, 248, 0.3), 0 10px 20px -8px rgba(0, 0, 0, 0.5);
+  
+  /* Dark mode gradients - Night sky themed */
+  --gradient-primary: linear-gradient(135deg, #0c4a6e 0%, #075985 50%, #0369a1 100%);
+  --gradient-secondary: linear-gradient(135deg, #115e59 0%, #0f766e 50%, #0d9488 100%);
+  --gradient-accent: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #075985 100%);
+  --gradient-sky: linear-gradient(180deg, #0c4a6e 0%, #075985 50%, #0369a1 100%);
+  --gradient-hero: linear-gradient(135deg, #0c4a6e 0%, #0e7490 35%, #115e59 70%, #14532d 100%);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --sidebar-width: 20rem;
+  
+  /* Modern shadow utilities */
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  
+  /* Gradient utilities */
+  --gradient-primary: var(--gradient-primary);
+  --gradient-secondary: var(--gradient-secondary);
+  --gradient-accent: var(--gradient-accent);
+  --gradient-muted: var(--gradient-muted);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Modern focus styles */
+  *:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  
+  /* Improved selection colors */
+  ::selection {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: var(--foreground);
+  }
+}
+
+/* Modern utility classes */
+@layer utilities {
+  .shadow-xs { box-shadow: var(--shadow-xs); }
+  .shadow-sm { box-shadow: var(--shadow-sm); }
+  .shadow-md { box-shadow: var(--shadow-md); }
+  .shadow-lg { box-shadow: var(--shadow-lg); }
+  .shadow-xl { box-shadow: var(--shadow-xl); }
+  
+  .bg-gradient-primary { background: var(--gradient-primary); }
+  .bg-gradient-secondary { background: var(--gradient-secondary); }
+  .bg-gradient-accent { background: var(--gradient-accent); }
+  .bg-gradient-muted { background: var(--gradient-muted); }
+  
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .text-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  .animate-wiggle {
+    animation: wiggle 1s ease-in-out infinite;
+  }
+  
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes glow {
+  0%, 100% { 
+    box-shadow: 0 0 5px rgba(14, 165, 233, 0.3), 0 0 10px rgba(14, 165, 233, 0.2);
+  }
+  50% { 
+    box-shadow: 0 0 10px rgba(14, 165, 233, 0.5), 0 0 20px rgba(14, 165, 233, 0.3), 0 0 30px rgba(14, 165, 233, 0.2);
+  }
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    p {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    label {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    button {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    input {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+}
