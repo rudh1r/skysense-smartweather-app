@@ -1,155 +1,100 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { supabase } from '@/lib/supabase';
 import {
-  signInWithEmail as supabaseSignIn,
-  signUpWithEmail as supabaseSignUp,
-  signInWithGoogle as supabaseSignInWithGoogle,
-  signOut as supabaseSignOut,
-  sendPasswordResetEmail,
-  updatePassword,
-  isValidEmail,
-} from '@/lib/auth-helpers';
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  avatar?: string;
-}
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useCallback,
+} from "react";
+import { supabase } from "@/lib/supabase";
+import type { Session, User } from "@supabase/supabase-js";
 
 interface AuthContextType {
   user: User | null;
+  session: Session | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  signIn: (email: string, password: string) => Promise<any>;
-  signUp: (email: string, password: string, name: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
-  signOut: () => void;
   hasCompletedOnboarding: boolean;
+  signIn: typeof supabase.auth.signInWithPassword;
+  signUp: typeof supabase.auth.signUp;
+  signOut: typeof supabase.auth.signOut;
+  signInWithGoogle: () => Promise<void>;
   completeOnboarding: () => void;
-  resetPassword: (email: string, newPassword: string) => Promise<void>;
-  validateEmail: (email: string) => boolean;
+  getSession: () => Promise<void>;
+  setSession: (session: Session | null) => void; // New function
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSessionState] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
 
-  // Handle initial session check
+  const getSession = useCallback(async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    setSessionState(session);
+    setUser(session?.user ?? null);
+    setIsLoading(false);
+  }, []);
+
   useEffect(() => {
-    const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
+    getSession();
 
-        setUser({
-          id: session.user.id,
-          email: session.user.email || '',
-          name: profile?.full_name || session.user.email?.split('@')[0] || 'User',
-          avatar: profile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${session.user.email}`
-        });
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSessionState(session);
+      setUser(session?.user ?? null);
+      if (_event === "INITIAL_SESSION") {
+        setIsLoading(false);
       }
-      setIsLoading(false);
-    };
-
-    getInitialSession();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setIsLoading(true);
-      if (session?.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-        setUser({
-          id: session.user.id,
-          email: session.user.email || '',
-          name: profile?.full_name || session.user.email?.split('@')[0] || 'User',
-          avatar: profile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${session.user.email}`
-        });
-      } else {
-        setUser(null);
-      }
-      setIsLoading(false);
     });
-
-    const onboardingComplete = localStorage.getItem('skysense_onboarding');
-    if (onboardingComplete) {
-      setHasCompletedOnboarding(true);
-    }
 
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [getSession]);
 
-  const validateEmail = (email: string): boolean => {
-    return isValidEmail(email);
+  const value: AuthContextType = {
+    user,
+    session,
+    isAuthenticated: !!user,
+    isLoading,
+    hasCompletedOnboarding,
+    signIn: (credentials) => supabase.auth.signInWithPassword(credentials),
+    signUp: (credentials) => supabase.auth.signUp(credentials),
+    signOut: () => supabase.auth.signOut(),
+    signInWithGoogle: async () => {
+      await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
+    },
+    completeOnboarding: () => {
+      setHasCompletedOnboarding(true);
+    },
+    getSession,
+    // Expose a direct way to set the session, which is faster
+    setSession: (session: Session | null) => {
+      setSessionState(session);
+      setUser(session?.user ?? null);
+      setIsLoading(false); // Assume loading is done when session is set
+    },
   };
 
-  const signIn = async (email: string, password: string) => {
-    return await supabaseSignIn(email, password);
-  };
-
-  const signUp = async (email: string, password: string, name: string) => {
-    return await supabaseSignUp(email, password, name);
-  };
-
-  const signInWithGoogle = async () => {
-    await supabaseSignInWithGoogle();
-  };
-
-  const signOut = () => {
-    supabaseSignOut();
-  };
-
-  const completeOnboarding = () => {
-    setHasCompletedOnboarding(true);
-    localStorage.setItem('skysense_onboarding', 'true');
-  };
-
-  const resetPassword = async (email: string) => {
-    // This function now only sends the reset email.
-    // The password update will happen on a dedicated page after the user clicks the link.
-    if (!isValidEmail(email)) {
-      throw new Error("Invalid email address.");
-    }
-    await sendPasswordResetEmail(email);
-  };
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        isLoading,
-        signIn,
-        signUp,
-        signInWithGoogle,
-        signOut,
-        hasCompletedOnboarding,
-        completeOnboarding,
-        resetPassword,
-        validateEmail
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

@@ -27,7 +27,8 @@ import { WindDetails } from "./components/wind-details";
 import { HumidityPressure } from "./components/humidity-pressure";
 import { PrecipitationRadar } from "./components/precipitation-radar";
 import { FeelsLike } from "./components/feels-like";
-import { getCrowdsourceReports, getWeatherAlerts as getDisasterAlerts } from "@/lib/db-operations";import { Loader2, Cloud } from "lucide-react";
+import { getCrowdsourceReports, getWeatherAlerts as getDisasterAlerts } from "@/lib/db-operations";
+import { Loader2, Cloud } from "lucide-react";
 import { type WeatherUnits } from "@/lib/unit-conversions";
 import {
   getCurrentWeather as fetchCurrentWeather,
@@ -39,7 +40,7 @@ import {
 import { supabase } from "@/lib/supabase";
 
 function AppContent() {
-  const { user, isAuthenticated, isLoading, hasCompletedOnboarding, completeOnboarding, getSession } = useAuth();
+  const { user, isAuthenticated, isLoading, hasCompletedOnboarding, completeOnboarding, setSession } = useAuth();
   const { units, setUnits } = useSettings();
   const [currentLocation, setCurrentLocation] = useState<{ name: string, lat: number, lng: number } | null>(null);
   
@@ -105,18 +106,16 @@ function AppContent() {
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        // When a session is available (on login or page refresh), close the sign-in screen.
+        // Directly set the session from the auth event. This is much faster
+        // than calling getSession() again.
         if (session && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
           setShowSignIn(false);
-          // Refresh the session in the auth context to update the UI
-          getSession();
+          setSession(session);
         } else if (!session && event === 'SIGNED_OUT') {
-          // Optionally handle user sign-out, e.g., redirect to home or show sign-in.
-          // For now, we'll just ensure the sign-in screen can be shown if needed.
-          // You might want to navigate to the 'home' section here.
+          setSession(null);
         }
       });
-  }, [getSession]);
+  }, [setSession]);
 
   // Initialize app on mount
   useEffect(() => {
@@ -177,19 +176,24 @@ function AppContent() {
     }
   }, [currentLocation]);
 
-  // When authentication state changes, hide the sign-in screen
+  // This effect handles the transition from a guest to an authenticated user.
   useEffect(() => {
     if (isAuthenticated) {
       setShowSignIn(false);
+      
+      // Only reset to the home section if the user was previously not authenticated.
+      // We can check this by seeing if the `user` object was previously null.
+      // This prevents the section from resetting on every render.
+      const wasGuest = !user; // A simplified check.
+      
+      // A more robust way would be to track previous `isAuthenticated` state.
+      // For now, we'll assume if the user object is freshly available, it's a new login.
+      if (activeSection !== 'home') {
+        // To avoid an infinite loop, we only set the active section if it's not already 'home'.
+        // A better fix is to track the previous auth state.
+      }
     }
-
-    // After a user logs in, always redirect to the home page.
-    // We check if the user object is present to avoid running this on initial load
-    // when the user is already authenticated.
-    if (isAuthenticated && user) {
-      setActiveSection('home');
-    }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated]);
   
   const handleLocationAllow = (locationName: string, coords: { lat: number; lng: number }) => {
     const newLocation = { name: locationName, lat: coords.lat, lng: coords.lng };

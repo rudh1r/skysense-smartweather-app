@@ -91,12 +91,13 @@ export function SidebarNavigation({
     }
   };
 
-  const initials = user?.name
-    .split(' ')
-    .map(n => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2) || 'G';
+  const getInitials = () => {
+    if (!user) return 'G';
+    
+    const name = user.user_metadata?.full_name || user.email;
+    if (!name) return 'G';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  };
 
   return (
     <div className={`fixed left-0 top-0 bottom-0 bg-gradient-to-br from-white/95 via-white/90 to-white/95 dark:from-slate-900/95 dark:via-slate-900/90 dark:to-slate-900/95 backdrop-blur-xl border-r border-white/30 dark:border-slate-800/50 z-40 flex flex-col shadow-2xl transition-all duration-300 ease-in-out ${
@@ -257,7 +258,7 @@ export function SidebarNavigation({
                     <Avatar className="h-10 w-10 border-2 border-primary/20 flex-shrink-0">
                       <AvatarImage src={user.avatar} alt={user.name} />
                       <AvatarFallback className="bg-gradient-to-br from-sky-500 to-teal-500 text-white text-sm">
-                        {initials}
+                        {getInitials()}
                       </AvatarFallback>
                     </Avatar>
                     {!isCollapsed && (

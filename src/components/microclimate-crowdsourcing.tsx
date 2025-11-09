@@ -148,11 +148,16 @@ export function MicroclimateCrowdsourcing({ onSignInClick }: MicroclimateCrowdso
 
     setIsSubmitting(true);
     try {
+      const mockCoordinates = { lat: 37.7749, lng: -122.4194 }; // Mock coordinates
       const createdReport = await createCrowdsourceReport({
-        ...newReport,
-        userId: user.id,
-        username: user.name,
-        coordinates: { lat: 37.7749, lng: -122.4194 }, // Mock coordinates
+        condition: newReport.condition,
+        description: newReport.description,
+        report_type: 'other', // Add the required report_type field
+        location_name: newReport.location,
+        user_id: user.id,
+        username: user.user_metadata?.full_name || user.email,
+        latitude: mockCoordinates.lat,
+        longitude: mockCoordinates.lng,
       });
       setReports(prev => [createdReport, ...prev]);
       toast.success('Weather report submitted successfully!');

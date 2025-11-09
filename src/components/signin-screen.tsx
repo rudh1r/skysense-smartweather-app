@@ -40,7 +40,7 @@ interface PasswordValidation {
 }
 
 export function SignInScreen({ onBack, onContinueAsGuest }: SignInScreenProps) {
-  const { signIn, signUp, signInWithGoogle, signOut } = useAuth();
+  const { signIn, signUp, signInWithGoogle, setSession } = useAuth();
   const [activeTab, setActiveTab] = useState<"signin" | "signup">("signin");
   
   // Sign In State
@@ -103,7 +103,8 @@ export function SignInScreen({ onBack, onContinueAsGuest }: SignInScreenProps) {
       }
       // If sign-in is successful and we have a user session, close the sign-in screen.
       if (data.session) {
-        onBack();
+        setSession(data.session); // Directly set the session for a fast UI update
+        onBack(); // Close the modal
       }
     } catch (err: any) {
       setError(err?.message ?? 'An unexpected error occurred.');
