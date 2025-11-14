@@ -11,30 +11,32 @@ SkySense also includes unique features such as a Smart Advisor that generates pe
 
 **Real-Time Weather Data**
 
-Current temperature and conditions
-Humidity, wind speed, visibility
-Hourly (24-hour) and weekly (7-day) forecasts
+Current temperature and conditions<br>
+Humidity, wind speed, visibility<br>
+Hourly (24-hour) and weekly (7-day) forecasts<br>
 
 **Environmental Tracking**
 
-UV Index with severity levels
-Air Quality Index (AQI) with health interpretations
-Sunrise & sunset timings
+UV Index with severity levels<br>
+Air Quality Index (AQI) with health interpretations<br>
+Sunrise & sunset timings<br>
 
 **Smart Advisor**
 
-Personalized safety and health suggestions
-Tips based on UV, pollution, and weather trends
-Crowdsourced Microclimate Reports
-Users can submit short local weather updates
-Helps improve hyper-local accuracy for other users
+Personalized safety and health suggestions<br>
+Tips based on UV, pollution, and weather trends<br>
+
+**Crowdsourced Microclimate Reports<br>**
+
+Users can submit short local weather updates<br>
+Helps improve hyper-local accuracy for other users<br>
 
 **Interactive & Responsive UI**
 
-Built with React components
-Clean layout with charts and icons
-Works across devices and screen sizes
-Geolocation Support
-Detects user’s location automatically
-Provides location-specific forecasts
+Built with React components<br>
+Clean layout with charts and icons<br>
+Works across devices and screen sizes<br>
+Geolocation Support<br>
+Detects user’s location automatically<br>
+Provides location-specific forecasts<br>
  
