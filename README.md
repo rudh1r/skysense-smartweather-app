@@ -36,7 +36,9 @@ Helps improve hyper-local accuracy for other users<br>
 Built with React components<br>
 Clean layout with charts and icons<br>
 Works across devices and screen sizes<br>
-Geolocation Support<br>
+
+**Geolocation Support<br>**
+
 Detects user’s location automatically<br>
 Provides location-specific forecasts<br>
  
