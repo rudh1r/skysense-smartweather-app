@@ -7,21 +7,21 @@ SkySense is a smart, user-friendly weather application built using React.js and 
 
 SkySense also includes unique features such as a Smart Advisor that generates personalized safety tips and a microclimate crowdsourcing module where users can submit local weather updates. The application supports geolocation-based forecasting, guest mode, and future scalability for mobile or desktop versions.
 
-🌤️ Features
+**🌤️ Features**
 
-Real-Time Weather Data
+**Real-Time Weather Data**
 
 Current temperature and conditions
 Humidity, wind speed, visibility
 Hourly (24-hour) and weekly (7-day) forecasts
 
-Environmental Tracking
+**Environmental Tracking**
 
 UV Index with severity levels
 Air Quality Index (AQI) with health interpretations
 Sunrise & sunset timings
 
-Smart Advisor
+**Smart Advisor**
 
 Personalized safety and health suggestions
 Tips based on UV, pollution, and weather trends
@@ -29,7 +29,7 @@ Crowdsourced Microclimate Reports
 Users can submit short local weather updates
 Helps improve hyper-local accuracy for other users
 
-Interactive & Responsive UI
+**Interactive & Responsive UI**
 
 Built with React components
 Clean layout with charts and icons
